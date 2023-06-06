@@ -31,12 +31,11 @@ export async function main(ns: NS): Promise<void> {
 
       if (ns.serverExists(hostname)) {
         ns.upgradePurchasedServer(hostname, ram)
-        ns.killall(hostname)
       } else {
         ns.purchaseServer(hostname, ram)
+        nuke(ns, hostname, target)
       }
 
-      nuke(ns, hostname, target)
       ns.toast(`Purchased server ${i}`)
     }
   }

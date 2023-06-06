@@ -61,6 +61,12 @@ export async function main(ns: NS): Promise<void> {
     ns.exit()
   }
 
+  ns.atExit(() => {
+    if (participants.has(host)) {
+      finish(host)
+    }
+  })
+
   const minSecurity = ns.getServerMinSecurityLevel(target)
   const maxMoney = ns.getServerMaxMoney(target)
 

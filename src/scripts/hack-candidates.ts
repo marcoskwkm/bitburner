@@ -10,7 +10,9 @@ export async function main(ns: NS): Promise<void> {
 
   candidates.forEach((s) =>
     ns.tprint(
-      `${s.host}:\n\tMax money = $${s.maxMoney}\n\tMin security = ${s.minSecurity}\n\tReq hack lvl = ${s.reqHack}`
+      `${s.host}:\n\tMax money = $${ns.formatNumber(
+        s.maxMoney
+      )}\n\tMin security = ${s.minSecurity}\n\tReq hack lvl = ${s.reqHack}`
     )
   )
 }
