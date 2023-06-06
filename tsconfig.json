@@ -1,0 +1,31 @@
+{
+  "include": ["NetscriptDefinitions.d.ts", "src/**/*"],
+  "compilerOptions": {
+    "allowJs": false,
+    "alwaysStrict": true,
+    "baseUrl": "src/",
+    "esModuleInterop": true,
+    "inlineSourceMap": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noEmitOnError": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": "dist/",
+    "resolveJsonModule": true,
+    "rootDir": "src/",
+    "skipLibCheck": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+    "target": "esnext",
+    "allowJs": true,
+    "paths": {
+      "/*": ["*"],
+      "@ns": ["../NetscriptDefinitions.d.ts"]
+    }
+  }
+}
