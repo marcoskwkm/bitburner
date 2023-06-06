@@ -1,18 +1,22 @@
 import { NS } from '@ns'
 
-export async function main(ns: NS): Promise<void> {
-  const HACK_FILE = 'scripts/hack.js'
-  const FILES_TO_COPY = [HACK_FILE, 'scripts/Server/index.js']
+import { FILES, HOSTS, SCRIPTS } from 'scripts/utils/constants'
 
-  if (ns.args.length === 0) {
-    ns.tprint('Missing server name')
-    ns.exit()
-  }
+export const nuke = (ns: NS, serverName: string, hackTarget?: string) => {
+  const FILES_TO_COPY = [
+    SCRIPTS.HACK_V3,
+    SCRIPTS.CONSTANTS,
+    SCRIPTS.SIMPLE_GROW,
+    SCRIPTS.SIMPLE_HACK,
+    SCRIPTS.SIMPLE_WEAKEN,
+  ]
 
-  const serverName = ns.args[0] as string
+  ns.fileExists(FILES.BRUTE_SSH, HOSTS.HOME) && ns.brutessh(serverName)
+  ns.fileExists(FILES.FTP_CRACK, HOSTS.HOME) && ns.ftpcrack(serverName)
+  ns.fileExists(FILES.RELAY_SMTP, HOSTS.HOME) && ns.relaysmtp(serverName)
+  ns.fileExists(FILES.HTTP_WORM, HOSTS.HOME) && ns.httpworm(serverName)
+  ns.fileExists(FILES.SQL_INJECT, HOSTS.HOME) && ns.sqlinject(serverName)
 
-  ns.brutessh(serverName)
-  ns.ftpcrack(serverName)
   ns.nuke(serverName)
 
   if (!ns.hasRootAccess(serverName)) {
@@ -20,17 +24,32 @@ export async function main(ns: NS): Promise<void> {
     ns.exit()
   }
 
-  ns.tprintf('Successfully nuked %s', serverName)
-
   ns.scp(FILES_TO_COPY, serverName, 'home')
 
-  ns.tprintf('Successfully copied hack scripts to target server')
+  const canRun =
+    ns.getServerMaxRam(serverName) - ns.getServerUsedRam(serverName) >
+    ns.getScriptRam(SCRIPTS.HACK)
 
-  const nThreads = Math.floor(
-    (ns.getServerMaxRam(serverName) - ns.getServerUsedRam(serverName)) /
-      ns.getScriptRam(HACK_FILE)
-  )
+  if (canRun) {
+    ns.exec(
+      SCRIPTS.HACK_V3,
+      serverName,
+      1,
+      ...[hackTarget].filter((x): x is string => !!x)
+    )
 
-  ns.exec(HACK_FILE, serverName, nThreads)
-  ns.tprint(`Running hack with ${nThreads} threads on ${serverName}`)
+    ns.toast(`Running hack-v3 on ${serverName}`, 'success')
+  }
+}
+
+export async function main(ns: NS): Promise<void> {
+  if (ns.args.length === 0) {
+    ns.tprint('Missing server name')
+    ns.exit()
+  }
+
+  const serverName = ns.args[0] as string
+  const hackTarget = ns.args[1] as string
+
+  nuke(ns, serverName, hackTarget)
 }

@@ -1,43 +1,40 @@
 import { NS } from '@ns'
 
-import { Server } from 'scripts/Server/index'
+import { HOSTS } from 'scripts/utils/constants'
 
 export async function main(ns: NS): Promise<void> {
-  const serverName = (ns.args[0] as string) ?? 'joesguns'
-  const server = new Server(ns, serverName)
+  const serverName = (ns.args[0] as string) ?? HOSTS.MAX_HARDWARE
 
   ns.printf('Hacking %s...', serverName)
 
-  if (server.minDifficulty === undefined || server.maxMoney === undefined) {
-    ns.print('Some server parameters are not defined. Aborting.')
-    ns.exit()
-  }
+  const minSecurity = ns.getServerMinSecurityLevel(serverName)
+  const maxMoney = ns.getServerMaxMoney(serverName)
 
-  const targetDifficulty = Math.max(
-    1.3 * server.minDifficulty,
-    server.minDifficulty + 5
-  )
-  const targetMoney = Math.min(0.7 * server.maxMoney, 2000000) as number
+  const targetSecurity = Math.max(1.3 * minSecurity, minSecurity + 5)
+  const targetMoney = (0.75 * maxMoney) as number
 
   while (true) {
-    while (server.getDifficulty() > targetDifficulty) {
+    const curSecurity = ns.getServerSecurityLevel(serverName)
+    const curMoney = ns.getServerMoneyAvailable(serverName)
+
+    if (curSecurity > targetSecurity) {
       ns.printf(
         'Lowering difficulty (current: %.3f, target: %.3f)',
-        server.getDifficulty(),
-        targetDifficulty
+        curSecurity,
+        targetSecurity
       )
+
       await ns.weaken(serverName)
-    }
-
-    while (server.getMoney() < targetMoney) {
+    } else if (curMoney < targetMoney) {
       ns.printf(
-        'Increasing available money (current: %d, target: %d)',
-        server.getMoney(),
-        targetMoney
+        'Increasing available money (current: %s, target: %s)',
+        ns.formatNumber(curMoney),
+        ns.formatNumber(targetMoney)
       )
-      await ns.grow(serverName)
-    }
 
-    await ns.hack(serverName)
+      await ns.grow(serverName)
+    } else {
+      await ns.hack(serverName)
+    }
   }
 }

@@ -1,24 +1,43 @@
 import { NS } from '@ns'
 
+import { nuke } from 'scripts/nuke'
+
+export const getPurchasedServerName = (id: number) => `s${id}`
+
 export async function main(ns: NS): Promise<void> {
-  const HACK_FILE = 'scripts/hack.js'
-  const FILES_TO_COPY = [HACK_FILE, 'scripts/Server/index.js']
-  const SERVER_RAM = 64
+  const INITIAL_EXP = 8
 
-  const nThreads = Math.floor(SERVER_RAM / ns.getScriptRam(HACK_FILE))
+  const target = ns.args[0] as string | undefined
 
-  for (let i = 0; i < ns.getPurchasedServerLimit(); i++) {
-    ns.print(`Waiting for server ${i}...`)
+  for (let e = INITIAL_EXP; e <= 20; e++) {
+    const ram = Math.pow(2, e)
 
-    while (
-      ns.getServerMoneyAvailable('home') < ns.getPurchasedServerCost(SERVER_RAM)
-    ) {
-      await ns.sleep(1000)
+    for (let i = 0; i < ns.getPurchasedServerLimit(); i++) {
+      ns.print(`Waiting for server ${i}...`)
+      const hostname = getPurchasedServerName(i)
+
+      if (ns.serverExists(hostname) && ns.getServerMaxRam(hostname) >= ram) {
+        ns.print('Server exists and has enough ram. Skipping...')
+        continue
+      }
+
+      const cost = ns.serverExists(hostname)
+        ? ns.getPurchasedServerUpgradeCost(hostname, ram)
+        : ns.getPurchasedServerCost(ram)
+
+      while (ns.getServerMoneyAvailable('home') < cost) {
+        await ns.sleep(1000)
+      }
+
+      if (ns.serverExists(hostname)) {
+        ns.upgradePurchasedServer(hostname, ram)
+        ns.killall(hostname)
+      } else {
+        ns.purchaseServer(hostname, ram)
+      }
+
+      nuke(ns, hostname, target)
+      ns.toast(`Purchased server ${i}`)
     }
-
-    const hostname = ns.purchaseServer(`s${i}`, SERVER_RAM)
-    ns.scp(FILES_TO_COPY, hostname, 'home')
-    ns.exec(HACK_FILE, hostname, nThreads)
-    ns.print(`Purchased server ${i}`)
   }
 }
