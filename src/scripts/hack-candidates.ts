@@ -6,7 +6,7 @@ export async function main(ns: NS): Promise<void> {
   const candidates = getAllServers(ns)
     .filter((s) => ns.hasRootAccess(s.host))
     .sort((sa, sb) => sb.maxMoney - sa.maxMoney)
-    .slice(0, 10)
+    .slice(0, 30)
 
   candidates.forEach((s) =>
     ns.tprint(

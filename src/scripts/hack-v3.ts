@@ -6,6 +6,7 @@
 import { NS } from '@ns'
 
 import { HOSTS, SCRIPTS } from 'scripts/utils/constants'
+import { createTimer } from 'scripts/ui/timer'
 
 const REGISTRATION_TIME = 5000
 const OFFSET = 1000
@@ -20,7 +21,10 @@ const register = async (ns: NS, id: string) => {
     await ns.sleep(1000)
   }
 
+  let isManager = false
+
   if (!registrationOpen) {
+    isManager = true
     registrationOpen = true
     setTimeout(() => {
       busy = true
@@ -30,6 +34,7 @@ const register = async (ns: NS, id: string) => {
   }
 
   participants.add(id)
+  return isManager
 }
 
 const finish = (id: string) => {
@@ -74,7 +79,7 @@ export async function main(ns: NS): Promise<void> {
   const targetMoney = (0.75 * maxMoney) as number
 
   while (true) {
-    await register(ns, host)
+    const isManager = await register(ns, host)
 
     const curSecurity = ns.getServerSecurityLevel(target)
     const curMoney = ns.getServerMoneyAvailable(target)
@@ -91,6 +96,7 @@ export async function main(ns: NS): Promise<void> {
       const weakenTime = ns.getWeakenTime(target)
 
       ns.exec(SCRIPTS.SIMPLE_WEAKEN, host, weakenThreads, target)
+      isManager && createTimer(`Weaken ${target}`, weakenTime)
       await ns.sleep(weakenTime + OFFSET)
     } else if (curMoney < targetMoney) {
       ns.printf(
@@ -107,8 +113,11 @@ export async function main(ns: NS): Promise<void> {
       const weakenTime = ns.getWeakenTime(target)
 
       ns.exec(SCRIPTS.SIMPLE_GROW, host, growThreads, target)
+      isManager && createTimer(`Grow ${target}`, growTime)
       await ns.sleep(Math.max(0, growTime - weakenTime))
+
       ns.exec(SCRIPTS.SIMPLE_WEAKEN, host, weakenThreads, target)
+      isManager && createTimer(`Weaken ${target}`, weakenTime)
       await ns.sleep(weakenTime + OFFSET)
     } else {
       const hackThreads = Math.floor(availableRam / 2 / hackRam)
@@ -119,8 +128,11 @@ export async function main(ns: NS): Promise<void> {
       const weakenTime = ns.getWeakenTime(target)
 
       ns.exec(SCRIPTS.SIMPLE_HACK, host, hackThreads, target)
+      isManager && createTimer(`Hack ${target}`, hackTime)
       await ns.sleep(Math.max(0, hackTime - weakenTime))
+
       ns.exec(SCRIPTS.SIMPLE_WEAKEN, host, weakenThreads, target)
+      isManager && createTimer(`Weaken ${target}`, weakenTime)
       await ns.sleep(weakenTime + OFFSET)
     }
 

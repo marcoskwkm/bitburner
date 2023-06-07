@@ -4,11 +4,12 @@ import { FILES, HOSTS, SCRIPTS } from 'scripts/utils/constants'
 
 export const nuke = (ns: NS, serverName: string, hackTarget?: string) => {
   const FILES_TO_COPY = [
-    SCRIPTS.HACK_V3,
+    SCRIPTS.HACK,
     SCRIPTS.CONSTANTS,
     SCRIPTS.SIMPLE_GROW,
     SCRIPTS.SIMPLE_HACK,
     SCRIPTS.SIMPLE_WEAKEN,
+    SCRIPTS.UTILS_TIME,
   ]
 
   ns.fileExists(FILES.BRUTE_SSH, HOSTS.HOME) && ns.brutessh(serverName)
@@ -32,13 +33,13 @@ export const nuke = (ns: NS, serverName: string, hackTarget?: string) => {
 
   if (canRun) {
     ns.exec(
-      SCRIPTS.HACK_V3,
+      SCRIPTS.HACK,
       serverName,
       1,
       ...[hackTarget].filter((x): x is string => !!x)
     )
 
-    ns.toast(`Running hack-v3 on ${serverName}`, 'success')
+    ns.toast(`Running hack-v4 on ${serverName}`, 'success')
   }
 }
 

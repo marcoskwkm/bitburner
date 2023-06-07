@@ -7,13 +7,13 @@ export const FILES = {
 } as const
 
 export const SCRIPTS = {
-  HACK: 'scripts/hack.js',
-  HACK_V2: 'scripts/hack-v2.js',
-  HACK_V3: 'scripts/hack-v3.js',
+  HACK: 'scripts/hack-v4.js',
   CONSTANTS: 'scripts/utils/constants.js',
   SIMPLE_HACK: 'scripts/simple-hack.js',
   SIMPLE_WEAKEN: 'scripts/simple-weaken.js',
   SIMPLE_GROW: 'scripts/simple-grow.js',
+  TIMER: 'scripts/ui/timer.js',
+  UTILS_TIME: 'scripts/utils/time.js',
 } as const
 
 export const HOSTS = {
