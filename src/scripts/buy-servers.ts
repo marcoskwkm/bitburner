@@ -1,13 +1,9 @@
 import { NS } from '@ns'
 
-import { nuke } from 'scripts/nuke'
-
 export const getPurchasedServerName = (id: number) => `s${id}`
 
 export async function main(ns: NS): Promise<void> {
   const INITIAL_EXP = 8
-
-  const target = ns.args[0] as string | undefined
 
   for (let e = INITIAL_EXP; e <= 20; e++) {
     const ram = Math.pow(2, e)
@@ -33,7 +29,6 @@ export async function main(ns: NS): Promise<void> {
         ns.upgradePurchasedServer(hostname, ram)
       } else {
         ns.purchaseServer(hostname, ram)
-        nuke(ns, hostname, target)
       }
 
       ns.toast(`Purchased server ${i}`)

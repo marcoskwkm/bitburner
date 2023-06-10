@@ -20,7 +20,7 @@ export const solve = (input: Input) => {
 
 export const solvers = {
   'Total Ways to Sum': (input: number) =>
-    solve([input, [...Array(n - 1)].map((_, idx) => idx + 1)]),
+    solve([input, [...Array(input - 1)].map((_, idx) => idx + 1)]),
   'Total Ways to Sum II': solve,
 }
 

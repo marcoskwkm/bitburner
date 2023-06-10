@@ -8,6 +8,17 @@ import * as findAllValidMathExpressions from 'scripts/contracts/find-all-valid-m
 import * as totalWaysToSum from 'scripts/contracts/total-ways-to-sum'
 import * as findLargestPrimeFactor from 'scripts/contracts/find-largest-prime-factor'
 import * as generateIPAddresses from 'scripts/contracts/generate-ip-addresses'
+import * as uniquePathsInAGrid from 'scripts/contracts/unique-paths-in-a-grid'
+import * as subarrayWithMaximumSum from 'scripts/contracts/subarray-with-maximum-sum'
+import * as viginereCipher from 'scripts/contracts/vigenere-cipher'
+import * as hammingCodes from 'scripts/contracts/hamming-codes'
+import * as arrayJumpingGame from 'scripts/contracts/array-jumping-game'
+import * as caesarCipher from 'scripts/contracts/caesar-cipher'
+import * as spiralizeMatrix from 'scripts/contracts/spiralize-matrix'
+import * as mergeOverlappingIntervals from 'scripts/contracts/merge-overlapping-intervals'
+import * as shortestPathInAGrid from 'scripts/contracts/shortest-path-in-a-grid'
+import * as sanitizeParenthesisInExpression from 'scripts/contracts/sanitize-parenthesis-in-expression'
+import * as minimumPathSumInATriangle from 'scripts/contracts/minimum-path-sum-in-a-triangle'
 
 const solvers: Record<string, (...args: any[]) => any> = {
   ...proper2ColoringOfAGraph.solvers,
@@ -18,6 +29,17 @@ const solvers: Record<string, (...args: any[]) => any> = {
   ...totalWaysToSum.solvers,
   ...findLargestPrimeFactor.solvers,
   ...generateIPAddresses.solvers,
+  ...uniquePathsInAGrid.solvers,
+  ...subarrayWithMaximumSum.solvers,
+  ...viginereCipher.solvers,
+  ...hammingCodes.solvers,
+  ...arrayJumpingGame.solvers,
+  ...caesarCipher.solvers,
+  ...spiralizeMatrix.solvers,
+  ...mergeOverlappingIntervals.solvers,
+  ...shortestPathInAGrid.solvers,
+  ...sanitizeParenthesisInExpression.solvers,
+  ...minimumPathSumInATriangle.solvers,
 }
 
 export const solve = (ns: NS, host: string, filename: string) => {
@@ -28,6 +50,7 @@ export const solve = (ns: NS, host: string, filename: string) => {
 
   if (!solver) {
     ns.toast(`Solver for contract "${name}" not implemented.`, 'warning', 5000)
+    return
   }
 
   const reward = ns.codingcontract.attempt(solver(data), filename, host)

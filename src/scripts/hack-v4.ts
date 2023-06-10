@@ -433,6 +433,14 @@ export async function main(ns: NS): Promise<void> {
       }
     }
 
+    while (
+      ns.scriptRunning(SCRIPTS.SIMPLE_GROW, host) ||
+      ns.scriptRunning(SCRIPTS.SIMPLE_HACK, host) ||
+      ns.scriptRunning(SCRIPTS.SIMPLE_WEAKEN, host)
+    ) {
+      await ns.sleep(500)
+    }
+
     Barrier.finish(ns, host, target)
   }
 }

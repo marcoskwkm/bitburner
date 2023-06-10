@@ -15,6 +15,7 @@ export const findContracts = (ns: NS) => {
 
   for (const server of servers) {
     const contracts = ns.ls(server.host, '.cct')
+
     for (const filename of contracts) {
       allContracts.push({
         host: server.host,
@@ -27,10 +28,18 @@ export const findContracts = (ns: NS) => {
 }
 
 export async function main(ns: NS): Promise<void> {
+  ns.disableLog('ALL')
+
   while (true) {
+    ns.print('Looking for contracts...')
+
     const contracts = findContracts(ns)
 
     for (const contract of contracts) {
+      ns.print(
+        `Attempting to solve ${contract.filename} at ${contract.host}...`
+      )
+
       solve(ns, contract.host, contract.filename)
     }
 

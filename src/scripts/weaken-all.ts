@@ -1,18 +1,35 @@
 import { NS } from '@ns'
 
-import { FILES, HOSTS } from 'scripts/utils/constants'
-import { nuke } from 'scripts/nuke'
+import { FILES, HOSTS, SCRIPTS } from 'scripts/utils/constants'
 import { getPurchasedServerName } from 'scripts/buy-servers'
 import { getServersByPort, type Server } from 'scripts/utils/servers'
+import { LOOP_FLAG } from 'scripts/simple-weaken'
 
 const PROGRAMS_LIST = Object.values(FILES)
 
 export async function main(ns: NS): Promise<void> {
-  const hackTarget = ns.args[0] as string
+  const target = ns.args[0] as string
+
+  const FILES_TO_COPY = [SCRIPTS.SIMPLE_WEAKEN]
+
+  const getAvailableRam = (host: string) =>
+    ns.getServerMaxRam(host) - ns.getServerUsedRam(host)
+
+  const weakRam = ns.getScriptRam(SCRIPTS.SIMPLE_WEAKEN)
+
+  const runScript = (host: string) => {
+    ns.scp(FILES_TO_COPY, host, HOSTS.HOME)
+    const threads = Math.floor(getAvailableRam(host) / weakRam)
+    if (threads > 0) {
+      ns.exec(SCRIPTS.SIMPLE_WEAKEN, host, threads, target, LOOP_FLAG)
+    }
+  }
 
   for (let i = 0; i < ns.getPurchasedServerLimit(); i++) {
     const host = getPurchasedServerName(i)
-    ns.serverExists(host) && nuke(ns, host, hackTarget)
+    if (ns.serverExists(host)) {
+      runScript(host)
+    }
   }
 
   const servers = getServersByPort(ns)
@@ -31,7 +48,7 @@ export async function main(ns: NS): Promise<void> {
         servers[i].length > 0 &&
         ns.getHackingLevel() >= servers[i][0].reqHack
       ) {
-        nuke(ns, servers[i][0].host, hackTarget)
+        runScript(servers[i][0].host)
         servers[i] = servers[i].slice(1)
       }
     }

@@ -2,7 +2,8 @@ import { NS } from '@ns'
 
 type Input = string
 
-const input: Input = 'aaaaaaaaaaaaa'
+const input: Input =
+  'XbaaaaaaaatuiW1vLatu0kLatuLatuLatu3QErNGNGNMuzZ03G7Ko1gfs7fut0eLgfuitOY7mM'
 
 const decompress = (input: Input) => {
   const ans: string[] = []
@@ -55,7 +56,7 @@ const compress = (input: Input) => {
         if (input[i + k - 1] === input[i - j + k - 1]) {
           const val = 2 + dp[0][i + k]
 
-          if (val + dp[1][i]) {
+          if (val < dp[1][i]) {
             dp[1][i] = val
             op[1][i] = `${k}${j}`
           }
@@ -104,5 +105,7 @@ export const solvers = {
 }
 
 export async function main(ns: NS) {
+  ns.tprint(input)
   ns.tprint(compress(input))
+  ns.tprint(decompress(compress(input)))
 }
