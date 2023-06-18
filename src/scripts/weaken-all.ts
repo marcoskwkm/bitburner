@@ -4,6 +4,7 @@ import { FILES, HOSTS, SCRIPTS } from 'scripts/utils/constants'
 import { getPurchasedServerName } from 'scripts/buy-servers'
 import { getServersByPort, type Server } from 'scripts/utils/servers'
 import { LOOP_FLAG } from 'scripts/simple-weaken'
+import { nuke } from 'scripts/nuke'
 
 const PROGRAMS_LIST = Object.values(FILES)
 
@@ -48,6 +49,7 @@ export async function main(ns: NS): Promise<void> {
         servers[i].length > 0 &&
         ns.getHackingLevel() >= servers[i][0].reqHack
       ) {
+        nuke(ns, servers[i][0].host)
         runScript(servers[i][0].host)
         servers[i] = servers[i].slice(1)
       }
