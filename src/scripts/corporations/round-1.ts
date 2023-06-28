@@ -2,6 +2,7 @@
  * Implements corporation management strategy for 1st investment round.
  * Expects corporation in initial state.
  * As of 2.3.1, this should get an offer between 16t and 18t.
+ * Estimated run time (in BN-3.x): 2m 14s
  */
 
 import { type CorpIndustryName, NS } from '@ns'

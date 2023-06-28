@@ -3,6 +3,7 @@
  * Expects corporation to have no divisions.
  * As of 2.3.1, this should get about 20q funds in investment, assuming
  * round 1 got at least 16t.
+ * Estimated run time (in BN-3.x): 2m 20s
  */
 
 import { NS } from '@ns'
@@ -48,10 +49,15 @@ export const doit = async (ns: NS) => {
   const curRestaurantCnt = getRestaurantDivisions(ns).length
 
   for (let i = curRestaurantCnt; i < N_DIVISIONS; i++) {
-    ns.corporation.expandIndustry(
-      INDUSTRIES.RESTAURANT,
-      `${DIVISON_NAME} ${i + 1}`
-    )
+    try {
+      ns.corporation.expandIndustry(
+        INDUSTRIES.RESTAURANT,
+        `${DIVISON_NAME} ${i + 1}`
+      )
+    } catch (err) {
+      ns.print('Error while expanding industry. Most likely reached limit.')
+      break
+    }
   }
 
   ns.print('Expanding to all cities')

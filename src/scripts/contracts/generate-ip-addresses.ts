@@ -1,6 +1,6 @@
 import { NS } from '@ns'
 
-const input: Input = '22017614796'
+const input: Input = '12615128104'
 
 type Input = string
 
@@ -27,14 +27,14 @@ export const solve = (input: Input) => {
       return
     }
 
-    if (input[i] !== '0') {
-      ip[2 * i + 1] = ''
-      rec(i + 1, cnt, last)
-    }
+    ip[2 * i + 1] = ''
+    rec(i + 1, cnt, last)
 
     if (parseInt(input.substring(last + 1, i + 1)) < 256) {
-      ip[2 * i + 1] = '.'
-      rec(i + 1, cnt + 1, i)
+      if (input[last + 1] !== '0' || i - last === 1) {
+        ip[2 * i + 1] = '.'
+        rec(i + 1, cnt + 1, i)
+      }
     }
   }
 

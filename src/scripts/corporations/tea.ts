@@ -1,4 +1,4 @@
-import { NS } from '@ns'
+import { type CorpIndustryName, NS } from '@ns'
 
 import {
   maximizeMoraleAndEnergy,
@@ -9,12 +9,18 @@ export async function main(ns: NS): Promise<void> {
   ns.disableLog('ALL')
 
   while (true) {
-    const divisions = ns.corporation.getCorporation().divisions
-    const industries = [
-      ...new Set(
-        divisions.map((divName) => ns.corporation.getDivision(divName).type)
-      ),
-    ]
+    const industries =
+      ns.args.length > 0
+        ? (ns.args as CorpIndustryName[])
+        : [
+            ...new Set(
+              ns.corporation
+                .getCorporation()
+                .divisions.map(
+                  (divName) => ns.corporation.getDivision(divName).type
+                )
+            ),
+          ]
 
     await maximizeMoraleAndEnergy(ns, industries)
     await waitForCycle(ns)

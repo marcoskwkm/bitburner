@@ -2,7 +2,7 @@ import { NS } from '@ns'
 
 type Input = [string, number]
 
-const input: Input = ['5872910', -70]
+const input: Input = ['259213024439', 86]
 
 const solve = (input: Input) => {
   const [s, target] = input
@@ -27,8 +27,22 @@ const solve = (input: Input) => {
 
     let ops = ['', '+', '-', '*']
 
-    if (i > 0 && s[i - 1] === '0') {
-      ops = ops.filter((x) => x !== '')
+    if (s[i] === '0') {
+      // single zero
+      ['+', '-', '*'].forEach((op) => {
+        exp[2 * i] = op
+        if (i + 1 < s.length) {
+          ['+', '-', '*'].forEach((op2) => {
+            exp[2 * (i + 1)] = op2
+            doit(i + 2)
+          })
+        } else {
+          doit(i + 1)
+        }
+      })
+
+      // prevent leading zero
+      ops = ['']
     }
 
     if (i === 0) {
@@ -50,5 +64,7 @@ export const solvers = {
 }
 
 export async function main(ns: NS) {
-  ns.tprint(solve(input))
+  const res = solve(input)
+  ns.tprint(res.length)
+  ns.tprint(new Set(res).size)
 }

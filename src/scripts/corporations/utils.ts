@@ -5,13 +5,16 @@ import { CITY_NAMES } from 'scripts/corporations/constants'
 const getCurState = (ns: NS) => ns.corporation.getCorporation().state
 
 export const waitForCycle = async (ns: NS) => {
-  const curState = getCurState(ns)
-
-  while (curState === getCurState(ns)) {
+  // Forces state to be START
+  while (getCurState(ns) !== 'START') {
     await ns.sleep(100)
   }
 
-  while (curState !== getCurState(ns)) {
+  while (getCurState(ns) === 'START') {
+    await ns.sleep(100)
+  }
+
+  while (getCurState(ns) !== 'START') {
     await ns.sleep(100)
   }
 }
@@ -123,11 +126,13 @@ export const buyTeaAndThrowParties = (
     minStat = Math.min(minStat, avgEnergy, avgMorale)
 
     if (!ns.corporation.buyTea(divisionName, cityName)) {
+      ns.print(`Can't buy tea for ${divisionName} in ${cityName}`)
       return -1
     }
 
-    const amt = (100.5 - avgMorale) * 100000
+    const amt = (110.5 - avgMorale) * 100000
     if (!ns.corporation.throwParty(divisionName, cityName, amt)) {
+      ns.print(`Can't throw party for ${divisionName} in ${cityName}`)
       return -1
     }
   }
