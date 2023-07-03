@@ -1,7 +1,7 @@
 /*
  * Implements corporation management strategy for 3rd investment round.
  * Expects corporation to have no divisions.
- * As of 2.3.1, this goes infinite relatively fast (about 20 minutes).
+ * As of 2.3.1, this goes infinite.
  * Estimated run time (in BN-3.x): 5h 30m
  */
 
@@ -104,6 +104,7 @@ const createProductManager = (ns: NS) => {
       if (product.developmentProgress === 100) {
         inDevelopment.delete(name)
         ns.print(`Finished developing ${name}`)
+
         ns.print(`Activating Market-TA.II for ${name}`)
         ns.corporation.setProductMarketTA2(TOBACCO_DIV_NAME, name, true)
 
@@ -326,9 +327,9 @@ export const doit = async (ns: NS) => {
     ...ALL_INDUSTRY_NAMES,
     INDUSTRIES.RESTAURANT,
   ])
-  cycleManager.registerRecurrentFunction(() =>
-    buyTeaAndThrowParties(ns, [...ALL_INDUSTRY_NAMES, INDUSTRIES.RESTAURANT])
-  )
+  // cycleManager.registerRecurrentFunction(() =>
+  //   buyTeaAndThrowParties(ns, [...ALL_INDUSTRY_NAMES, INDUSTRIES.RESTAURANT])
+  // )
 
   ns.print('Setting up loop exports')
   for (const cityName of CITY_NAMES) {
@@ -439,19 +440,21 @@ export const doit = async (ns: NS) => {
     )
 
     // Sell leftovers
+    // Prices should be low enough to sell everything, but also high enough
+    // so the company profit stays positive.
     ns.corporation.sellMaterial(
       AGRICULTURE_DIV_NAME,
       cityName,
       MATERIALS.FOOD,
       'MAX',
-      '0'
+      '0.2*MP'
     )
     ns.corporation.sellMaterial(
       AGRICULTURE_DIV_NAME,
       cityName,
       MATERIALS.PLANTS,
       'MAX',
-      '0'
+      '0.4*MP'
     )
   }
 
@@ -603,6 +606,10 @@ export const doit = async (ns: NS) => {
       )
     }
   }
+
+  cycleManager.registerRecurrentFunction(() =>
+    buyTeaAndThrowParties(ns, [...ALL_INDUSTRY_NAMES, INDUSTRIES.RESTAURANT])
+  )
 
   cycleManager.registerRecurrentFunction(createProductManager(ns))
 
