@@ -1,6 +1,6 @@
 import { NS } from '@ns'
 
-const input: Input = '12615128104'
+const input: Input = '595414201'
 
 type Input = string
 
@@ -15,30 +15,38 @@ export const solve = (input: Input) => {
 
   ip.pop()
 
-  const rec = (i: number, cnt: number, last: number) => {
-    if (cnt > 3 || i - last > 3) {
+  const rec = (i: number, cnt: number) => {
+    if (cnt > 4) {
       return
     }
 
-    if (i === input.length - 1) {
-      if (cnt === 3 && parseInt(input.substring(last + 1, i + 1)) < 256) {
+    if (i === input.length) {
+      if (cnt === 4) {
         ans.push(ip.join(''))
       }
+
       return
     }
 
-    ip[2 * i + 1] = ''
-    rec(i + 1, cnt, last)
-
-    if (parseInt(input.substring(last + 1, i + 1)) < 256) {
-      if (input[last + 1] !== '0' || i - last === 1) {
-        ip[2 * i + 1] = '.'
-        rec(i + 1, cnt + 1, i)
+    for (let take = 1; take <= 3 && i + take - 1 < input.length; take++) {
+      if (parseInt(input.substring(i, i + take)) >= 256) {
+        break
       }
+
+      if (i + take - 1 < input.length - 1) {
+        ip[2 * (i + take - 1) + 1] = '.'
+      }
+      rec(i + take, cnt + 1)
+
+      if (input[i] == '0') {
+        break
+      }
+
+      ip[2 * (i + take - 1) + 1] = ''
     }
   }
 
-  rec(0, 0, -1)
+  rec(0, 0)
 
   return ans
 }

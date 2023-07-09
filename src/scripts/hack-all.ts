@@ -184,7 +184,7 @@ export async function main(ns: NS) {
     if (totalThreads === 0) {
       // Happens when hack-all.js is killed while hacking scripts are running
       ns.print('No threads available. Waiting...')
-      ns.sleep(1000)
+      await ns.sleep(1000)
       continue
     }
 
