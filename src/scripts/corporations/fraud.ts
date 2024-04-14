@@ -2,7 +2,7 @@ import { NS } from '@ns'
 
 import { MATERIALS } from 'scripts/corporations/constants'
 
-const getCurState = (ns: NS) => ns.corporation.getCorporation().state
+const getCurState = (ns: NS) => ns.corporation.getCorporation().prevState
 
 export const waitForCycle = async (ns: NS) => {
   const curState = getCurState(ns)

@@ -2,7 +2,7 @@ import { type CorpIndustryName, NS } from '@ns'
 
 import { CITY_NAMES } from 'scripts/corporations/constants'
 
-const getCurState = (ns: NS) => ns.corporation.getCorporation().state
+const getCurState = (ns: NS) => ns.corporation.getCorporation().prevState
 
 export const waitForCycle = async (ns: NS) => {
   // Forces state to be START
