@@ -1,5 +1,3 @@
-// Needs to have devtools open for this to work
-
 import {
   getDocument,
   getElementSelectorFromRootByPath,
@@ -21,6 +19,11 @@ export const isCurrentPage = () => {
   )
 }
 
+const syncSleep = (ms: number) => {
+  const start = Date.now()
+  while (Date.now() - start < ms);
+}
+
 export const init = () => {} // eslint-disable-line @typescript-eslint/no-empty-function
 
 export const update = () => {
@@ -32,7 +35,6 @@ export const update = () => {
     )?.innerText ?? ''
 
   if (text.toLowerCase().includes('preparing')) {
-    // This is borderline cheating, but this minigame is BS.
-    debugger // eslint-disable-line no-debugger
+    setTimeout(() => syncSleep(1000))
   }
 }
