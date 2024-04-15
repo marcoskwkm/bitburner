@@ -3,6 +3,7 @@ import { NS } from '@ns'
 import * as BackwardGame from 'scripts/infiltration/backward-game'
 import * as CheatCodeGame from 'scripts/infiltration/cheat-code-game'
 import * as Main from 'scripts/infiltration/main'
+import * as MinesweeperGame from 'scripts/infiltration/minesweeper-game'
 import * as Cyberpunk from 'scripts/infiltration/cyberpunk'
 import * as WireCutting from 'scripts/infiltration/wire-cutting'
 import { getDocument } from 'scripts/utils/dom'
@@ -10,6 +11,7 @@ import { getDocument } from 'scripts/utils/dom'
 type State =
   | typeof BackwardGame.PAGE_ID
   | typeof Main.PAGE_ID
+  | typeof MinesweeperGame.PAGE_ID
   | typeof Cyberpunk.PAGE_ID
   | typeof CheatCodeGame.PAGE_ID
   | typeof WireCutting.PAGE_ID
@@ -23,6 +25,8 @@ const getPageHandler = () => {
       return CheatCodeGame
     case Main.isCurrentPage():
       return Main
+    case MinesweeperGame.isCurrentPage():
+      return MinesweeperGame
     case Cyberpunk.isCurrentPage():
       return Cyberpunk
     case WireCutting.isCurrentPage():
