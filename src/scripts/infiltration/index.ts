@@ -1,6 +1,7 @@
 import { NS } from '@ns'
 
 import * as BackwardGame from 'scripts/infiltration/backward-game'
+import * as BracketGame from 'scripts/infiltration/bracket-game'
 import * as BribeGame from 'scripts/infiltration/bribe-game'
 import * as CheatCodeGame from 'scripts/infiltration/cheat-code-game'
 import * as Main from 'scripts/infiltration/main'
@@ -11,6 +12,7 @@ import { getDocument } from 'scripts/utils/dom'
 
 type State =
   | typeof BackwardGame.PAGE_ID
+  | typeof BracketGame.PAGE_ID
   | typeof BribeGame.PAGE_ID
   | typeof Main.PAGE_ID
   | typeof MinesweeperGame.PAGE_ID
@@ -23,6 +25,8 @@ const getPageHandler = () => {
   switch (true) {
     case BackwardGame.isCurrentPage():
       return BackwardGame
+    case BracketGame.isCurrentPage():
+      return BracketGame
     case BribeGame.isCurrentPage():
       return BribeGame
     case CheatCodeGame.isCurrentPage():
