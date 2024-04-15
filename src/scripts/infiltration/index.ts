@@ -3,12 +3,14 @@ import { NS } from '@ns'
 import * as CheatCodeGame from 'scripts/infiltration/cheat-code-game'
 import * as Main from 'scripts/infiltration/main'
 import * as Cyberpunk from 'scripts/infiltration/cyberpunk'
+import * as WireCutting from 'scripts/infiltration/wire-cutting'
 import { getDocument } from 'scripts/utils/dom'
 
 type State =
   | typeof Main.PAGE_ID
   | typeof Cyberpunk.PAGE_ID
   | typeof CheatCodeGame.PAGE_ID
+  | typeof WireCutting.PAGE_ID
   | null
 
 const getPageHandler = () => {
@@ -19,6 +21,8 @@ const getPageHandler = () => {
       return Main
     case Cyberpunk.isCurrentPage():
       return Cyberpunk
+    case WireCutting.isCurrentPage():
+      return WireCutting
     default:
       return null
   }
