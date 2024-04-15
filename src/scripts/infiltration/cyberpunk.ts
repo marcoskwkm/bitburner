@@ -21,23 +21,25 @@ export const isCurrentPage = () => {
 
 export const update = () => {
   const sequence = [
-    ...(getDocument().querySelector(
+    ...((getDocument().querySelector(
       getElementSelectorFromRootByPath(containerPath.concat(2))
-    )?.children ?? []),
+    )?.children ?? []) as HTMLElement[]),
   ]
 
   const curIdx = sequence.findIndex(
-    (el: HTMLElement) => el.style.color === 'rgb(102, 153, 255)'
+    (el) => el.style.color === 'rgb(102, 153, 255)'
   )
 
   const curSymbol = sequence[curIdx]?.innerText.trim()
   const nextSymbol = sequence[curIdx + 1]?.innerText.trim()
 
-  ;[
+  const grid = [
     ...(getDocument().querySelector(
       getElementSelectorFromRootByPath(containerPath.concat(4))
     )?.children ?? []),
-  ].forEach((el: HTMLElement) => {
+  ] as HTMLElement[]
+
+  grid.forEach((el) => {
     if (el.innerText.trim() === curSymbol) {
       el.style.color = 'red'
     } else if (el.innerText.trim() === nextSymbol) {

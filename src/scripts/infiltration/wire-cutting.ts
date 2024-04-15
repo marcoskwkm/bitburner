@@ -28,7 +28,7 @@ export const init = () => {
     ...getDocument().querySelectorAll(
       getElementSelectorFromRootByPath(containerPath) + ' > p'
     ),
-  ].map((el) => el.innerText.slice(0, -1))
+  ].map((el) => (el as HTMLElement).innerText.slice(0, -1))
 
   if (instructions.length === 0) {
     return
@@ -38,7 +38,7 @@ export const init = () => {
     ...(getDocument().querySelector(
       getElementSelectorFromRootByPath(containerPath) + ' :last-child'
     )?.children ?? []),
-  ]
+  ] as HTMLElement[]
 
   const N = grid.filter((el) => el.style.color === 'rgb(0, 204, 0)').length
 

@@ -40,27 +40,26 @@ export const isCurrentPage = () => {
 }
 
 export const init = () => {
-  const f = (event: KeyboardEvent) => {
+  const f = (event: Event) => {
     const seq = [
       ...(getDocument().querySelector(
         getElementSelectorFromRootByPath(containerPath.concat(2, 1))
       )?.children ?? []),
-    ].map((el) => el.innerText)
+    ].map((el) => (el as HTMLElement).innerText)
 
     let nextKey = ''
 
     seq.forEach((key) => key !== '?' && (nextKey = key))
 
-    if (getArrow(event) !== nextKey) {
+    if (getArrow(event as KeyboardEvent) !== nextKey) {
       event.preventDefault()
       event.stopImmediatePropagation()
       return
     }
   }
 
-  getDocument().addEventListener('keydown', f, { useCapture: true })
-  return () =>
-    getDocument().removeEventListener('keydown', f, { useCapture: true })
+  getDocument().addEventListener('keydown', f, true)
+  return () => getDocument().removeEventListener('keydown', f, true)
 }
 
 export const update = () => {} // eslint-disable-line @typescript-eslint/no-empty-function
