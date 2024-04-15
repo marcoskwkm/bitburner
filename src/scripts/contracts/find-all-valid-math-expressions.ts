@@ -1,8 +1,10 @@
+// TODO: Make this more efficient
+
 import { NS } from '@ns'
 
 type Input = [string, number]
 
-const input: Input = ['259213024439', 86]
+const input: Input = ['82157004711', 88]
 
 const solve = (input: Input) => {
   const [s, target] = input
@@ -18,6 +20,11 @@ const solve = (input: Input) => {
   const doit = (i: number) => {
     if (i === s.length) {
       const res = exp.join('')
+      if (
+        !res.split(/[+\-*]/).every((num) => num.length === 1 || num[0] !== '0')
+      ) {
+        return
+      }
       if (eval(res) === target) {
         ans.push(res)
       }
@@ -26,24 +33,6 @@ const solve = (input: Input) => {
     }
 
     let ops = ['', '+', '-', '*']
-
-    if (s[i] === '0') {
-      // single zero
-      ['+', '-', '*'].forEach((op) => {
-        exp[2 * i] = op
-        if (i + 1 < s.length) {
-          ['+', '-', '*'].forEach((op2) => {
-            exp[2 * (i + 1)] = op2
-            doit(i + 2)
-          })
-        } else {
-          doit(i + 1)
-        }
-      })
-
-      // prevent leading zero
-      ops = ['']
-    }
 
     if (i === 0) {
       ops = ['']
