@@ -1,13 +1,20 @@
 import { NS } from '@ns'
 
+import * as CheatCodeGame from 'scripts/infiltration/cheat-code-game'
 import * as Main from 'scripts/infiltration/main'
 import * as Cyberpunk from 'scripts/infiltration/cyberpunk'
 import { getDocument } from 'scripts/utils/dom'
 
-type State = typeof Main.PAGE_ID | typeof Cyberpunk.PAGE_ID | null
+type State =
+  | typeof Main.PAGE_ID
+  | typeof Cyberpunk.PAGE_ID
+  | typeof CheatCodeGame.PAGE_ID
+  | null
 
 const getPageHandler = () => {
   switch (true) {
+    case CheatCodeGame.isCurrentPage():
+      return CheatCodeGame
     case Main.isCurrentPage():
       return Main
     case Cyberpunk.isCurrentPage():
@@ -37,6 +44,8 @@ class InfiltrationManager {
     console.log('Current state:', handler.PAGE_ID)
 
     if (this.previousState !== handler.PAGE_ID) {
+      console.log('Initializing', handler.PAGE_ID)
+
       const cb = handler.init()
 
       if (typeof cb === 'function') {
@@ -47,6 +56,7 @@ class InfiltrationManager {
       return
     }
 
+    console.log('Updating', handler.PAGE_ID)
     const cb = handler.update()
 
     if (typeof cb === 'function') {

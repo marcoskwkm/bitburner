@@ -1,9 +1,16 @@
-import { getDocument } from 'scripts/utils/dom'
+import {
+  getDocument,
+  getElementSelectorFromRootByPath,
+} from 'scripts/utils/dom'
 
 export const PAGE_ID = 'infiltration-main'
 
+const containerPath = [2, 1, 1, 2]
+
 export const isCurrentPage = () => {
-  const el = getDocument().querySelector('.css-1hdp5y0')
+  const el = getDocument().querySelector(
+    getElementSelectorFromRootByPath(containerPath.concat(1))
+  )
   return Boolean(
     el &&
       'innerText' in el &&
@@ -13,7 +20,9 @@ export const isCurrentPage = () => {
 }
 
 export const init = () => {
-  const container = getDocument().querySelector('.css-llg1yp')
+  const container = getDocument().querySelector(
+    getElementSelectorFromRootByPath(containerPath)
+  )
 
   if (!container) {
     throw new Error('Infiltration main screen container not found')
