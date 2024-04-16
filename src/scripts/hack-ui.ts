@@ -64,6 +64,7 @@ export class UI {
     container.style.borderColor = 'rgb(128, 128, 128)'
     container.style.borderWidth = '1px'
     container.style.padding = '0.5rem'
+    container.style.backgroundColor = 'black'
 
     const title = doc.createElement('div')
     title.style.padding = '0.5rem'
