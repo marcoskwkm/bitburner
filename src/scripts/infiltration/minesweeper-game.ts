@@ -23,30 +23,44 @@ const memo = {
   mines: [] as number[],
 }
 
-export const init = () => {
-  const grid = [
+const getGrid = () =>
+  [
     ...(getDocument().querySelector(
       getElementSelectorFromRootByPath(containerPath.concat(2))
     )?.children ?? []),
   ] as HTMLElement[]
 
+const preventDeathHandler = (event: Event) => {
+  if (!('key' in event) || event.key !== ' ' || !memo.mines.length) {
+    return
+  }
+
+  const idx = getGrid().findIndex(
+    (el) => getComputedStyle(el).color === 'rgb(102, 153, 255)'
+  )
+
+  if (!memo.mines.includes(idx)) {
+    event.preventDefault()
+    event.stopImmediatePropagation()
+  }
+}
+
+export const init = () => {
   memo.mines = []
 
-  grid.forEach((el, idx) => {
+  getGrid().forEach((el, idx) => {
     if (el.children.length > 0) {
       memo.mines.push(idx)
     }
   })
+
+  getDocument().addEventListener('keydown', preventDeathHandler, true)
+  return () =>
+    getDocument().removeEventListener('keydown', preventDeathHandler, true)
 }
 
 export const update = () => {
-  const grid = [
-    ...(getDocument().querySelector(
-      getElementSelectorFromRootByPath(containerPath.concat(2))
-    )?.children ?? []),
-  ] as HTMLElement[]
-
-  grid.forEach((el, idx) => {
+  getGrid().forEach((el, idx) => {
     if (memo.mines.includes(idx) && el.children.length === 0) {
       el.style.borderColor = 'red'
     }

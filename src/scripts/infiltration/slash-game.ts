@@ -19,22 +19,37 @@ export const isCurrentPage = () => {
   )
 }
 
+const getText = () =>
+  (
+    getDocument().querySelector(
+      getElementSelectorFromRootByPath(containerPath) + ' > h4:nth-of-type(2)'
+    ) as HTMLElement | undefined
+  )?.innerText ?? ''
+
 const syncSleep = (ms: number) => {
   const start = Date.now()
   while (Date.now() - start < ms);
 }
 
-export const init = () => {} // eslint-disable-line @typescript-eslint/no-empty-function
+const preventDeathHandler = (event: Event) => {
+  if (!('key' in event) || event.key !== ' ') {
+    return
+  }
+
+  if (getText().toLowerCase().includes('guarding')) {
+    event.preventDefault()
+    event.stopImmediatePropagation()
+  }
+}
+
+export const init = () => {
+  getDocument().addEventListener('keydown', preventDeathHandler, true)
+  return () =>
+    getDocument().removeEventListener('keydown', preventDeathHandler, true)
+}
 
 export const update = () => {
-  const text =
-    (
-      getDocument().querySelector(
-        getElementSelectorFromRootByPath(containerPath) + ' > h4:nth-of-type(2)'
-      ) as HTMLElement | undefined
-    )?.innerText ?? ''
-
-  if (text.toLowerCase().includes('preparing')) {
+  if (getText().toLowerCase().includes('preparing')) {
     setTimeout(() => syncSleep(1000))
   }
 }

@@ -43,12 +43,26 @@ export const isCurrentPage = () => {
   )
 }
 
+const getTextElement = () =>
+  getDocument().querySelector(
+    getElementSelectorFromRootByPath(containerPath.concat(3))
+  ) as HTMLElement | undefined
+
+const preventDeathHandler = (event: Event) => {
+  if (!('key' in event) || event.key !== ' ') {
+    return
+  }
+
+  if (!positiveWords.includes(getTextElement()?.innerText ?? '')) {
+    event.preventDefault()
+    event.stopImmediatePropagation()
+  }
+}
+
 export const init = () => {
   const upd = () =>
     setTimeout(() => {
-      const el = getDocument().querySelector(
-        getElementSelectorFromRootByPath(containerPath.concat(3))
-      ) as HTMLElement | undefined
+      const el = getTextElement()
 
       if (!el) {
         return
@@ -64,7 +78,11 @@ export const init = () => {
   upd()
 
   getDocument().addEventListener('keydown', upd)
-  return () => getDocument().removeEventListener('keydown', upd)
+  getDocument().addEventListener('keydown', preventDeathHandler, true)
+  return () => {
+    getDocument().removeEventListener('keydown', upd)
+    getDocument().removeEventListener('keydown', preventDeathHandler, true)
+  }
 }
 
 export const update = () => {} // eslint-disable-line @typescript-eslint/no-empty-function

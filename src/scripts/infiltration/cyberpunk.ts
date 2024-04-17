@@ -19,6 +19,13 @@ export const isCurrentPage = () => {
   )
 }
 
+const getGrid = () =>
+  [
+    ...(getDocument().querySelector(
+      getElementSelectorFromRootByPath(containerPath.concat(4))
+    )?.children ?? []),
+  ] as HTMLElement[]
+
 export const update = () => {
   const sequence = [
     ...((getDocument().querySelector(
@@ -33,13 +40,7 @@ export const update = () => {
   const curSymbol = sequence[curIdx]?.innerText.trim()
   const nextSymbol = sequence[curIdx + 1]?.innerText.trim()
 
-  const grid = [
-    ...(getDocument().querySelector(
-      getElementSelectorFromRootByPath(containerPath.concat(4))
-    )?.children ?? []),
-  ] as HTMLElement[]
-
-  grid.forEach((el) => {
+  getGrid().forEach((el) => {
     if (el.innerText.trim() === curSymbol) {
       el.style.color = 'red'
     } else if (el.innerText.trim() === nextSymbol) {
@@ -50,9 +51,29 @@ export const update = () => {
   })
 }
 
+const preventFailHandler = (event: Event) => {
+  if (!('key' in event) || event.key !== ' ') {
+    return
+  }
+
+  const curEl = getGrid().find(
+    (el) => getComputedStyle(el).borderColor === 'rgb(102, 153, 255)'
+  )
+
+  if (curEl?.style.color !== 'red') {
+    event.preventDefault()
+    event.stopImmediatePropagation()
+  }
+}
+
 export const init = () => {
   const f = () => setTimeout(update)
-  getDocument().addEventListener('keydown', f)
   update()
-  return () => getDocument().removeEventListener('keydown', f)
+
+  getDocument().addEventListener('keydown', f)
+  getDocument().addEventListener('keydown', preventFailHandler, true)
+  return () => {
+    getDocument().removeEventListener('keydown', f)
+    getDocument().removeEventListener('keydown', preventFailHandler, true)
+  }
 }
