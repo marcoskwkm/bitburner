@@ -91,7 +91,7 @@ class InfiltrationManager {
   }
 }
 
-export async function main(_: NS) {
+export async function main(ns: NS) {
   const manager = new InfiltrationManager()
   const observer = new MutationObserver(() => manager.update())
   const rootElement = getDocument().getElementById('root')
@@ -104,4 +104,6 @@ export async function main(_: NS) {
     childList: true,
     subtree: true,
   })
+
+  ns.tprint('Infiltration helpers loaded.')
 }
