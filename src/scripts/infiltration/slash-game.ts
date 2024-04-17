@@ -30,7 +30,7 @@ export const update = () => {
   const text =
     (
       getDocument().querySelector(
-        getElementSelectorFromRootByPath(containerPath.concat(2))
+        getElementSelectorFromRootByPath(containerPath) + ' > h4:nth-of-type(2)'
       ) as HTMLElement | undefined
     )?.innerText ?? ''
 
