@@ -14,7 +14,9 @@ export async function main(ns: NS): Promise<void> {
   const FILES_TO_COPY = [SCRIPTS.SIMPLE_WEAKEN]
 
   const getAvailableRam = (host: string) =>
-    ns.getServerMaxRam(host) - ns.getServerUsedRam(host)
+    ns.getServerMaxRam(host) -
+    ns.getServerUsedRam(host) -
+    (host === HOSTS.HOME ? 10 : 0)
 
   const weakRam = ns.getScriptRam(SCRIPTS.SIMPLE_WEAKEN)
 
