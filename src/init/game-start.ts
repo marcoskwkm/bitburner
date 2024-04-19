@@ -45,6 +45,9 @@ export async function main(ns: NS) {
   ns.print('Buying darkweb programs')
   getUnownedDarkwebPrograms(ns).forEach(ns.singularity.purchaseProgram)
 
+  ns.print('Moving to Aevum')
+  ns.singularity.travelToCity('Aevum')
+
   ns.print('Buying all servers we can afford')
   const autobuyPid = ns.run(SCRIPTS.SERVERS_AUTOBUY)
   await ns.sleep(100)
