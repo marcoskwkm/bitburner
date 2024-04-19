@@ -56,6 +56,21 @@ const preventDeathHandler = (event: Event) => {
   }
 }
 
+const stopAtCorrectAnswerHandler = (event: Event) => {
+  if (
+    !('key' in event) ||
+    typeof event.key !== 'string' ||
+    !event.key.startsWith('Arrow')
+  ) {
+    return
+  }
+
+  if (positiveWords.includes(getTextElement()?.innerText ?? '')) {
+    event.preventDefault()
+    event.stopImmediatePropagation()
+  }
+}
+
 export const init = () => {
   const upd = () =>
     setTimeout(() => {
@@ -76,9 +91,15 @@ export const init = () => {
 
   getDocument().addEventListener('keydown', upd)
   getDocument().addEventListener('keydown', preventDeathHandler, true)
+  getDocument().addEventListener('keydown', stopAtCorrectAnswerHandler, true)
   return () => {
     getDocument().removeEventListener('keydown', upd)
     getDocument().removeEventListener('keydown', preventDeathHandler, true)
+    getDocument().removeEventListener(
+      'keydown',
+      stopAtCorrectAnswerHandler,
+      true
+    )
   }
 }
 
