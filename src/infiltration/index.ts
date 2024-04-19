@@ -48,7 +48,7 @@ const getPageHandler = () => {
   }
 }
 
-class InfiltrationManager {
+export class InfiltrationManager {
   previousState: State = null
   cleanupCallbacks: (() => void)[] = []
 
