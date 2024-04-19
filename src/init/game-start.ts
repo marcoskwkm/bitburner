@@ -5,7 +5,7 @@ import { SCRIPTS } from '/utils/constants'
 const getUnownedDarkwebPrograms = (ns: NS) =>
   ns.singularity
     .getDarkwebPrograms()
-    .filter((program) => ns.fileExists(program))
+    .filter((program) => !ns.fileExists(program))
 
 const getDarkwebProgramsCost = (ns: NS) =>
   getUnownedDarkwebPrograms(ns).reduce(
